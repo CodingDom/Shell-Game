@@ -8,14 +8,19 @@ const shells = [
 const pearl = document.getElementById("pearl");
 const levelText = document.getElementById("level-text");
 
-const size = container.offsetWidth;
-const half = shells[0].offsetWidth/2;
-
 let level = 1;
 let speedMultiplier = 0.5;
 let currShell = shells[1];
 
-async function swap(shells, frames, level, looped=0, _callBack, originShells, originLevel) {
+function resetPosition() {
+    const size = container.offsetWidth;
+    const half = shells[0].offsetWidth/2;
+    shells[0].style.left = "0";
+    shells[1].style.left = (size/2) - half + "px";
+    shells[2].style.left = size - (half*2) + "px";
+};
+
+function swap(shells, frames, level, looped=0, _callBack, originShells, originLevel) {
     const randShells = randomizeShells(shells);
     const elem1 = randShells[0];
     const elem2 = randShells[1];
@@ -30,8 +35,7 @@ async function swap(shells, frames, level, looped=0, _callBack, originShells, or
     let target = 0;
     let id = setInterval(frame, 5);
 
-    
-    async function frame() {
+    function frame() {
         target += mid/frames;
         yTarget = (target/mid)*100;
         if (yTarget >= 200) {
@@ -69,7 +73,7 @@ async function swap(shells, frames, level, looped=0, _callBack, originShells, or
     }
 };
 
-async function raise(elem, currShell, _callBack, correct) {
+function raise(elem, currShell, _callBack, correct) {
     let pearl = null;
     if (currShell == elem) {
         pearl = document.createElement("div");
@@ -128,7 +132,7 @@ function randomizeShells(shells) {
     return newShells;
 };
 
-// screen.orientation.lock("landscape");
+
 
 shells.forEach(function(elem){
     elem.onmouseup = function() {
@@ -151,13 +155,18 @@ shells.forEach(function(elem){
 });
 
 async function start() {
-    await raise(currShell,currShell);
+    raise(currShell,currShell);
     setTimeout(function() {swap(shells, 100, level)},3000);
 };
 
+screen.orientation.lock("landscape").catch(function() {
 
-shells[0].style.left = "0";
-shells[1].style.left = (size/2) - half + "px";
-shells[2].style.left = size - (half*2) + "px";
+});
+
+resetPosition();
+
+// window.onresize = function() {
+//     resetPosition();
+// };
 start();
 };  
