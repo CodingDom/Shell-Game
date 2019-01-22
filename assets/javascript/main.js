@@ -155,8 +155,11 @@ shells.forEach(function(elem){
 });
 
 async function start() {
-    raise(currShell,currShell);
-    setTimeout(function() {swap(shells, 100, level)},3000);
+    setTimeout(function() {
+        resetPosition();
+        raise(currShell,currShell);
+        setTimeout(function() {swap(shells, 100, level)},3000);
+    },300);
 };
 
 screen.orientation.lock("landscape").catch(function() {
@@ -168,5 +171,21 @@ resetPosition();
 // window.onresize = function() {
 //     resetPosition();
 // };
-start();
+
+function doOnOrientationChange(e) {
+    switch(Math.abs(window.orientation)) {  
+      case 90:
+        alert('potrait');
+        break; 
+      default:
+        alert('landscape');
+        start();
+        break; 
+    }
+}
+  
+window.addEventListener('orientationchange', doOnOrientationChange);
+  
+// Initial execution if needed
+doOnOrientationChange();
 };  
