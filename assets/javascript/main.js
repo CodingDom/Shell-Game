@@ -8,8 +8,6 @@ const shells = [
 const pearl = document.getElementById("pearl");
 const levelText = document.getElementById("level-text");
 
-levelText.textContent = "Loaded";
-
 let level = 1;
 let speedMultiplier = 0.5;
 let currShell = shells[1];
@@ -156,7 +154,7 @@ shells.forEach(function(elem){
     };
 });
 
-async function start() {
+function start() {
     setTimeout(function() {
         resetPosition();
         raise(currShell,currShell);
