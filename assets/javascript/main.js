@@ -134,25 +134,7 @@ function randomizeShells(shells) {
 
 
 
-shells.forEach(function(elem){
-    elem.onmouseup = function() {
-        if (container.classList.contains("active")) {
-            container.classList.remove("active");
-            function grabResult(result) {
-                if (result == "correct") {
-                    level++;
-                    levelText.textContent = level;
-                    speedMultiplier = Math.floor(level/5);
-                } else if (!result) {
-                    raise(currShell,currShell, grabResult);
-                    return;
-                };
-                swap(shells, Math.max(100-(level*speedMultiplier*10),30), level);
-            };
-            raise(elem,currShell,grabResult,true);
-        };
-    };
-});
+
 
 function start() {
     setTimeout(function() {
