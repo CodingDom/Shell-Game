@@ -1,4 +1,5 @@
 window.onload = function() {
+const warning = document.getElementById("warning-message");
 const container = document.getElementById("shell-container");
 const shells = [
     document.getElementById("shell1"),
@@ -135,7 +136,7 @@ function randomizeShells(shells) {
 
 
 shells.forEach(function(elem){
-    elem.onmouseup = function() {
+    function onClick() {
         if (container.classList.contains("active")) {
             container.classList.remove("active");
             function grabResult(result) {
@@ -151,7 +152,9 @@ shells.forEach(function(elem){
             };
             raise(elem,currShell,grabResult,true);
         };
-    };
+    }
+    elem.onmouseup = onClick;
+    elem.ontouchend = onClick;
 });
 
 function start() {
@@ -172,18 +175,20 @@ resetPosition();
 //     resetPosition();
 // };
 
-function doOnOrientationChange(e) {
-    switch(Math.abs(window.orientation)) {  
-      case 90:
-        break; 
-      default:
-        start();
-        break; 
-    }
-}
+// function doOnOrientationChange(e) {
+//     switch(Math.abs(window.orientation)) {  
+//       case 90:
+//         start();
+//         break; 
+//       default:
+//         break; 
+//     }
+// }
   
-window.addEventListener('orientationchange', doOnOrientationChange);
+// warning.addEventListener('orientationchange', doOnOrientationChange);
   
 // Initial execution if needed
-doOnOrientationChange();
+// doOnOrientationChange();
+
+start();
 };  
