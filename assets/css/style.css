@@ -1,0 +1,67 @@
+html,body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
+    background-image: url("../images/beach.jpg");
+    background-size: cover;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+}
+
+#topbar {
+    position: absolute;
+    width: 100%;
+    -webkit-filter: drop-shadow(3.5px 5px 0 #804042)             
+                    drop-shadow(-5px 0px 0 #804042);
+    filter: drop-shadow(3.5px 5px 0 #804042)                           
+            drop-shadow(-5px 0px 0 #804042);
+}
+
+#topbar-text {
+    position: absolute;
+    width: 100%;
+    padding-top: 10px;
+    color: white;
+    font-size: 3.65vw;
+    z-index: 5;
+}
+
+#level {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+}
+
+#shell-container {
+    position: absolute;
+    height: 17%;
+    width: 80%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 70%;
+}
+
+.shell {
+    position: absolute;
+    bottom: 0;
+    z-index: 1;
+}
+
+.active .shell:hover {
+    cursor: pointer;
+}
+
+#pearl {
+    position: absolute;
+    display: none;
+    width: 35px;
+    height: 35px;
+    background: radial-gradient(circle at top left, white, pink, hotpink);
+    border-radius: 50%;
+    z-index: 0;
+}
