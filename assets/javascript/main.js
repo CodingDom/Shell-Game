@@ -162,8 +162,8 @@ async function start() {
     },300);
 };
 
-screen.orientation.lock("landscape").catch(function() {
-
+screen.orientation.lock("landscape").catch(function(e) {
+    levelText.textContent = e.message;
 });
 
 resetPosition();
@@ -175,10 +175,8 @@ resetPosition();
 function doOnOrientationChange(e) {
     switch(Math.abs(window.orientation)) {  
       case 90:
-        alert('potrait');
         break; 
       default:
-        alert('landscape');
         start();
         break; 
     }
