@@ -79,12 +79,20 @@ body {
     height: 100%;
     top: 0;
     left: 0;
-    padding-top: 25%;
+    padding-top: 15%;
     text-align: center;
     font-size: 50px;
     color: white;
     background-color: black; 
     z-index: 100;
+}
+
+#warning-message img {
+    filter: brightness(10);
+}
+
+#warning-message h1 {
+    margin: 0;
 }
 
 @media only screen and (orientation:portrait){
