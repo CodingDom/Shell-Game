@@ -198,13 +198,15 @@ resetPosition();
 
 let ready = false;
 
-if (warning.style.display != "block") {
+const portraitCheck = window.matchMedia("(orientation:portrait)");
+
+if (!portraitCheck.matches) {
     start();
     ready = true;
 };
 
-window.onresize = function() {
-    if (warning.style.display != "block") {
+portraitCheck.onchange = function(e) {
+    if (!e.matches) {
         if (!ready) {
             start();
             ready = true;
@@ -213,6 +215,8 @@ window.onresize = function() {
         };
     };
 };
+
+
 
 
 };  
