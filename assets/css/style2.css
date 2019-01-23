@@ -90,8 +90,8 @@ body {
 #pearl {
     position: absolute;
     visibility: hidden;
-    width: 35px;
-    height: 35px;
+    width: 5vh;
+    height: 5vh;
     background: radial-gradient(circle at top left, white, pink, hotpink);
     border-radius: 50%;
     z-index: 0;
