@@ -1,28 +1,35 @@
 window.onload = function() {
+const startScreen = {
+    menu : document.getElementById("menu-container"),
+    content : document.getElementById("menu-content"),
+    playBtn : document.getElementById("play"),
+}    
+
+const gameScreen = {
+    container : document.getElementById("game-container"),
+    levelText : document.getElementById("level-text"),
+    shellContainer : document.getElementById("shell-container"),
+    shells : [
+        document.getElementById("shell1"),
+        document.getElementById("shell2"),
+        document.getElementById("shell3")
+    ],
+}
 const warning = document.getElementById("warning-message");
-const container = document.getElementById("shell-container");
-const shells = [
-    document.getElementById("shell1"),
-    document.getElementById("shell2"),
-    document.getElementById("shell3")
-];
 const posArray = [
     "left",
     "center",
     "right"
 ];
 
-const pearl = document.getElementById("pearl");
-const levelText = document.getElementById("level-text");
-
 let level = 1;
 let speedMultiplier = 0.5;
-let currShell = shells[1];
+let currShell = gameScreen.shells[1];
 
 function resetPosition() {
-    const size = container.offsetWidth;
-    const half = shells[0].offsetWidth/2;
-    shells.forEach(function(elem) {
+    const size = gameScreen.shellContainer.offsetWidth;
+    const half = gameScreen.shells[0].offsetWidth/2;
+    gameScreen.shells.forEach(function(elem) {
         switch (elem.getAttribute("data-pos")) {
             case "left":
                 elem.style.left = "0";
@@ -79,7 +86,7 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
                 };
             } else {
                 if (looped >= originLevel) {
-                    container.classList.add("active");
+                    gameScreen.shellContainer.classList.add("active");
                 } else {
                     _callBack(originShells, frames, originLevel, looped)
                 };
@@ -103,10 +110,9 @@ function raise(elem, currShell, _callBack, correct) {
     if (currShell == elem) {
         pearl = document.createElement("div");
         pearl.id = "pearl";
-        container.append(pearl);
+        gameScreen.shellContainer.append(pearl);
         pearl.style.bottom = 0;
-        const calcLeft = ((pearl.offsetWidth+(pearl.offsetWidth/1.5))/container.offsetWidth) + (elem.offsetLeft/container.offsetWidth);
-        console.log((pearl.offsetWidth/container.offsetWidth));
+        const calcLeft = ((pearl.offsetWidth+(pearl.offsetWidth/1.5))/gameScreen.shellContainer.offsetWidth) + (elem.offsetLeft/gameScreen.shellContainer.offsetWidth);
         pearl.style.left = calcLeft*100 + "%";
         pearl.style.visibility = "visible";
         pearl.style.zIndex = 0;
@@ -120,7 +126,7 @@ function raise(elem, currShell, _callBack, correct) {
         elem.style.transform = `rotate(${-yTarget}deg)`;
         };
         yTarget += dir;
-        if (yTarget >= 100) {
+        if (yTarget >= 200) {
             dir = -0.5;
             clearInterval(id);
             setTimeout(function() {
@@ -162,33 +168,80 @@ function randomizeShells(shells) {
 function start() {
     setTimeout(function() {
         resetPosition();
-        raise(currShell,currShell);
-        setTimeout(function() {swap(shells, 100, level)},3000);
+        raise(currShell,currShell, function() {
+            swap(gameScreen.shells, 100, level);
+        });
     },300);
 };
 
-shells.forEach(function(elem){
+gameScreen.shells.forEach(function(elem){
     function onClick() {
-        if (container.classList.contains("active")) {
-            container.classList.remove("active");
+        if (gameScreen.shellContainer.classList.contains("active")) {
+            gameScreen.shellContainer.classList.remove("active");
             function grabResult(result) {
                 if (result == "correct") {
                     level++;
-                    levelText.textContent = level;
+                    gameScreen.levelText.textContent = level;
                     speedMultiplier = Math.floor(level/5);
                 } else if (!result) {
                     raise(currShell,currShell, grabResult);
                     return;
                 };
-                swap(shells, Math.max(100-(level*speedMultiplier*10),30), level);
+                swap(gameScreen.shells, Math.max(100-(level*speedMultiplier*10),30), level);
             };
             raise(elem,currShell,grabResult,true);
         };
     }
     elem.onmouseup = onClick;
     elem.ontouchend = onClick;
-    elem.setAttribute("data-pos",posArray[shells.indexOf(elem)]);
+    elem.setAttribute("data-pos",posArray[gameScreen.shells.indexOf(elem)]);
 });
+
+let currSize = 0;
+startScreen.content.style.opacity = 0;
+let menuAnim = setInterval(function(){
+    if (startScreen.menu.style.width != "50%") {
+        currSize += 0.15;
+        startScreen.menu.style.width = Math.min(currSize, 50) + "%";
+        startScreen.menu.style.height = Math.min(currSize,50)/10 + "%";
+        if (currSize >= 50) {currSize = 0};
+    } else if (startScreen.menu.style.height != "60%") {
+        currSize += 0.1;
+        if (currSize < 5) {currSize = 5};
+        startScreen.menu.style.height = Math.min(currSize, 60) + "%";
+        if (currSize >= 60) {
+            startScreen.content.style.opacity = "1";
+            startScreen.content.style.zIndex = 5;
+            currSize = 0;
+        };
+    } else {
+        currSize += 0.5;
+        console.log(currSize);
+        startScreen.content.style.opacity = currSize/100;
+        if (currSize >= 100) {
+            clearInterval(menuAnim);
+            currSize = 0;
+        };
+    };    
+},5);
+
+function play() {
+    startScreen.menu.style.display = "none";
+    gameScreen.container.style.opacity = 0;
+    gameScreen.container.style.visibility = "visible";
+    let screenAnim = setInterval(function() {
+        currSize += 0.5;
+        gameScreen.container.style.opacity = Math.min(currSize, 100)/100;
+        if (currSize >= 100) {
+            clearInterval(screenAnim);
+            start();
+        };
+    },5);
+};
+
+startScreen.playBtn.onmouseup = play;
+startScreen.playBtn.ontouchend = play;
+
 
 // screen.orientation.lock("landscape").catch(function(e) {
 //     levelText.textContent = e.message;
@@ -196,24 +249,24 @@ shells.forEach(function(elem){
 
 resetPosition();
 
-let ready = false;
 
-if (!window.matchMedia("(orientation:portrait)").matches) {
-    start();
-    ready = true;
-};
+// let ready = false;
 
-window.matchMedia("(orientation:portrait)").onchange = function(e) {
-    levelText.textContent = e.matches;
-    if (!e.matches) {
-        setTimeout(function() {
-            if (!ready) {
-                start();
-                ready = true;
-            };
-        },200);    
-    };
-};
+// if (!window.matchMedia("(orientation:portrait)").matches) {
+//     start();
+//     ready = true;
+// };
+
+// window.matchMedia("(orientation:portrait)").onchange = function(e) {
+//     if (!e.matches) {
+//         setTimeout(function() {
+//             if (!ready) {
+//                 start();
+//                 ready = true;
+//             };
+//         },200);    
+//     };
+// };
 
 
 
