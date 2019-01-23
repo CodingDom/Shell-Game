@@ -119,7 +119,7 @@ function raise(elem, currShell, _callBack, correct) {
     };
     let id = setInterval(frame, 5);
     let yTarget = 1;
-    let dir = 0.5;
+    let dir = 2.5;
     function frame() {
         elem.style.bottom = yTarget + "%";
         if (yTarget <= 30) {
@@ -127,7 +127,7 @@ function raise(elem, currShell, _callBack, correct) {
         };
         yTarget += dir;
         if (yTarget >= 200) {
-            dir = -0.5;
+            dir = -2.5;
             clearInterval(id);
             setTimeout(function() {
                 id = setInterval(frame, 5);
@@ -199,13 +199,8 @@ gameScreen.shells.forEach(function(elem){
 let currSize = 0;
 startScreen.content.style.opacity = 0;
 let menuAnim = setInterval(function(){
-    if (startScreen.menu.style.width != "50%") {
-        currSize += 0.15;
-        startScreen.menu.style.width = Math.min(currSize, 50) + "%";
-        startScreen.menu.style.height = Math.min(currSize,50)/10 + "%";
-        if (currSize >= 50) {currSize = 0};
-    } else if (startScreen.menu.style.height != "60%") {
-        currSize += 0.1;
+    if (startScreen.menu.style.height != "60%") {
+        currSize += 0.5;
         if (currSize < 5) {currSize = 5};
         startScreen.menu.style.height = Math.min(currSize, 60) + "%";
         if (currSize >= 60) {
@@ -230,7 +225,7 @@ function play() {
     gameScreen.container.style.visibility = "visible";
     resetPosition();
     let screenAnim = setInterval(function() {
-        currSize += 0.5;
+        currSize += 1;
         gameScreen.container.style.opacity = Math.min(currSize, 100)/100;
         if (currSize >= 100) {
             clearInterval(screenAnim);
@@ -250,24 +245,12 @@ startScreen.playBtn.ontouchend = play;
 resetPosition();
 
 
-// let ready = false;
-
-// if (!window.matchMedia("(orientation:portrait)").matches) {
-//     start();
-//     ready = true;
-// };
-
-// window.matchMedia("(orientation:portrait)").onchange = function(e) {
-//     if (!e.matches) {
-//         setTimeout(function() {
-//             if (!ready) {
-//                 start();
-//                 ready = true;
-//             };
-//         },200);    
-//     };
-// };
-
+// if (startScreen.menu.style.width != "50%") {
+//     currSize += 0.15;
+//     startScreen.menu.style.width = Math.min(currSize, 50) + "%";
+//     startScreen.menu.style.height = Math.min(currSize,50)/10 + "%";
+//     if (currSize >= 50) {currSize = 0};
+// } else 
 
 
 
