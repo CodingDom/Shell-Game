@@ -72,16 +72,16 @@ body {
 }
 
 #menu-content h1 {
-    font-size: 4.5vh;
+    font-size: 5vh;
 }
 
 #menu-content p {
-    font-size: 3.8vh;
+    font-size: 4.3vh;
 }
 
 #menu-content button {
-    padding: 1% 8%;
-    font-size: 3.25vh;
+    padding: 2% 7vh;
+    font-size: 4vh;
     color: white;
     background-color: #804042;
     border: none;

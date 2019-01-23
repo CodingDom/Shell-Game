@@ -210,7 +210,6 @@ let menuAnim = setInterval(function(){
         };
     } else {
         currSize += 0.5;
-        console.log(currSize);
         startScreen.content.style.opacity = currSize/100;
         if (currSize >= 100) {
             clearInterval(menuAnim);
@@ -236,22 +235,5 @@ function play() {
 
 startScreen.playBtn.onmouseup = play;
 startScreen.playBtn.ontouchend = play;
-
-
-// screen.orientation.lock("landscape").catch(function(e) {
-//     levelText.textContent = e.message;
-// });
-
-resetPosition();
-
-
-// if (startScreen.menu.style.width != "50%") {
-//     currSize += 0.15;
-//     startScreen.menu.style.width = Math.min(currSize, 50) + "%";
-//     startScreen.menu.style.height = Math.min(currSize,50)/10 + "%";
-//     if (currSize >= 50) {currSize = 0};
-// } else 
-
-
 
 };  
