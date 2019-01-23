@@ -6,6 +6,12 @@ const shells = [
     document.getElementById("shell2"),
     document.getElementById("shell3")
 ];
+const posArray = [
+    "left",
+    "center",
+    "right"
+];
+
 const pearl = document.getElementById("pearl");
 const levelText = document.getElementById("level-text");
 
@@ -16,9 +22,19 @@ let currShell = shells[1];
 function resetPosition() {
     const size = container.offsetWidth;
     const half = shells[0].offsetWidth/2;
-    shells[0].style.left = "0";
-    shells[1].style.left = (size/2) - half + "px";
-    shells[2].style.left = size - (half*2) + "px";
+    shells.forEach(function(elem) {
+        switch (elem.getAttribute("data-pos")) {
+            case "left":
+                elem.style.left = "0";
+            break;
+            case "center":
+                elem.style.left = (((size/2) - half)/size)*100 + "%";
+            break;
+            case "right":
+                elem.style.left = ((size - (half*2))/size)*100 + "%";
+            break;
+        };
+    });
 };
 
 function swap(shells, frames, level, looped=0, _callBack, originShells, originLevel) {
@@ -29,6 +45,14 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
     const pos1 = elem1.style.left.match(/\d+/g).map(Number)[0];
     const pos2 = elem2.style.left.match(/\d+/g).map(Number)[0];
     const mid = Math.abs(pos2-pos1)/2;
+
+    const elem1Align = elem1.getAttribute("data-pos");
+    const elem2Align = elem2.getAttribute("data-pos");
+
+    elem1.setAttribute("data-pos",elem2Align);
+    elem1.setAttribute("data-dir","top");
+    elem2.setAttribute("data-pos",elem1Align);
+    elem2.setAttribute("data-dir","bottom");
     let dir = 1;
     if (pos1 > pos2) {
         dir = -1;
@@ -41,8 +65,8 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
         yTarget = (target/mid)*100;
         if (yTarget >= 200) {
             // Setting to exact positions
-            elem1.style.left = pos2 + "px";
-            elem2.style.left = pos1 + "px";
+            elem1.style.left = pos2 + "%";
+            elem2.style.left = pos1 + "%";
             elem1.style.bottom = "0";
             elem2.style.bottom = "0";
             clearInterval(id);
@@ -55,7 +79,7 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
                 };
             } else {
                 if (looped >= originLevel) {
-                    document.getElementById("shell-container").classList.add("active");
+                    container.classList.add("active");
                 } else {
                     _callBack(originShells, frames, originLevel, looped)
                 };
@@ -63,14 +87,14 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
             return;
         };
         if (target <= mid) {
-            elem1.style.bottom = yTarget + "px";
-            elem2.style.bottom = -yTarget + "px";
+            elem1.style.bottom = yTarget + "%";
+            elem2.style.bottom = -yTarget + "%";
         } else {
-            elem1.style.bottom = 200 - yTarget + "px";
-            elem2.style.bottom = -200 + yTarget + "px";
+            elem1.style.bottom = 200 - yTarget + "%";
+            elem2.style.bottom = -200 + yTarget + "%";
         };
-        elem1.style.left = pos1 + (dir*target) + 'px'; 
-        elem2.style.left = pos2 - (dir*target) + 'px'; 
+        elem1.style.left = pos1 + (dir*target) + '%'; 
+        elem2.style.left = pos2 - (dir*target) + '%'; 
     }
 };
 
@@ -79,10 +103,12 @@ function raise(elem, currShell, _callBack, correct) {
     if (currShell == elem) {
         pearl = document.createElement("div");
         pearl.id = "pearl";
-        document.getElementById("shell-container").append(pearl);
+        container.append(pearl);
         pearl.style.bottom = 0;
-        pearl.style.left = parseInt(elem.style.left.replace("px", "")) + ((elem.offsetWidth/2) - (pearl.offsetWidth/2)) + "px";
-        pearl.style.display = "block";
+        const calcLeft = ((pearl.offsetWidth+(pearl.offsetWidth/1.5))/container.offsetWidth) + (elem.offsetLeft/container.offsetWidth);
+        console.log((pearl.offsetWidth/container.offsetWidth));
+        pearl.style.left = calcLeft*100 + "%";
+        pearl.style.visibility = "visible";
         pearl.style.zIndex = 0;
     };
     let id = setInterval(frame, 5);
@@ -133,7 +159,13 @@ function randomizeShells(shells) {
     return newShells;
 };
 
-
+function start() {
+    setTimeout(function() {
+        resetPosition();
+        raise(currShell,currShell);
+        setTimeout(function() {swap(shells, 100, level)},3000);
+    },300);
+};
 
 shells.forEach(function(elem){
     function onClick() {
@@ -155,15 +187,8 @@ shells.forEach(function(elem){
     }
     elem.onmouseup = onClick;
     elem.ontouchend = onClick;
+    elem.setAttribute("data-pos",posArray[shells.indexOf(elem)]);
 });
-
-function start() {
-    setTimeout(function() {
-        resetPosition();
-        raise(currShell,currShell);
-        setTimeout(function() {swap(shells, 100, level)},3000);
-    },300);
-};
 
 // screen.orientation.lock("landscape").catch(function(e) {
 //     levelText.textContent = e.message;
@@ -171,24 +196,23 @@ function start() {
 
 resetPosition();
 
-// window.onresize = function() {
-//     resetPosition();
-// };
+let ready = false;
 
-// function doOnOrientationChange(e) {
-//     switch(Math.abs(window.orientation)) {  
-//       case 90:
-//         start();
-//         break; 
-//       default:
-//         break; 
-//     }
-// }
-  
-// warning.addEventListener('orientationchange', doOnOrientationChange);
-  
-// Initial execution if needed
-// doOnOrientationChange();
+if (warning.style.display != "block") {
+    start();
+    ready = true;
+};
 
-start();
+window.onresize = function() {
+    if (warning.style.display != "block") {
+        if (!ready) {
+            start();
+            ready = true;
+        } else {
+            resetPosition();
+        };
+    };
+};
+
+
 };  
