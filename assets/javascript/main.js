@@ -198,21 +198,19 @@ resetPosition();
 
 let ready = false;
 
-const portraitCheck = window.matchMedia("(orientation:portrait)");
-
-if (!portraitCheck.matches) {
+if (!window.matchMedia("(orientation:portrait)").matches) {
     start();
     ready = true;
 };
 
-portraitCheck.onchange = function(e) {
+window.matchMedia("(orientation:portrait)").onchange = function(e) {
     if (!e.matches) {
-        if (!ready) {
-            start();
-            ready = true;
-        } else {
-            resetPosition();
-        };
+        setTimeout(function() {
+            if (!ready) {
+                start();
+                ready = true;
+            };
+        },200);    
     };
 };
 
