@@ -204,6 +204,7 @@ if (!window.matchMedia("(orientation:portrait)").matches) {
 };
 
 window.matchMedia("(orientation:portrait)").onchange = function(e) {
+    levelText.textContent = e.matches;
     if (!e.matches) {
         setTimeout(function() {
             if (!ready) {
