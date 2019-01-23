@@ -167,7 +167,6 @@ function randomizeShells(shells) {
 
 function start() {
     setTimeout(function() {
-        resetPosition();
         raise(currShell,currShell, function() {
             swap(gameScreen.shells, 100, level);
         });
@@ -229,6 +228,7 @@ function play() {
     startScreen.menu.style.display = "none";
     gameScreen.container.style.opacity = 0;
     gameScreen.container.style.visibility = "visible";
+    resetPosition();
     let screenAnim = setInterval(function() {
         currSize += 0.5;
         gameScreen.container.style.opacity = Math.min(currSize, 100)/100;

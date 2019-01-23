@@ -46,7 +46,7 @@ body {
 
 #menu-border img {
     position: absolute;
-    border-radius: 15px;
+    border-radius: 1.77vh;
 }
 
 #border-top {
@@ -62,7 +62,7 @@ body {
     position: absolute;
     height: 100%;
     width: 100%;
-    padding: 30px 15%;
+    padding: 5% 15%;
     left: 0;
     top: 0;
     opacity: 0;
@@ -82,7 +82,7 @@ body {
     background-color: #804042;
     border: none;
     box-shadow: 0 0 0 0.59vh #9c6466 inset;
-    border-radius: 10px;
+    border-radius: 1.18vh;
 }
 
 #game-container {
@@ -96,7 +96,7 @@ body {
                     drop-shadow(-5px 0px 0 #804042);
     filter: drop-shadow(3.5px 5px 0 #804042)                           
             drop-shadow(-5px 0px 0 #804042);
-    border-radius: 15px;
+    border-radius: 1.77vh;
 }
 
 #topbar-text {
