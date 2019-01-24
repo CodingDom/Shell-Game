@@ -8,6 +8,11 @@ const startScreen = {
 const gameScreen = {
     container : document.getElementById("game-container"),
     levelText : document.getElementById("level-text"),
+    bankText : document.getElementById("bank-text"),
+    betContainer : document.getElementById("betting-container"),
+    betAmount : document.getElementById("betting-amount"),
+    increments : document.getElementById("increments"),
+    startBtn : document.getElementById("start"),
     shellContainer : document.getElementById("shell-container"),
     shells : [
         document.getElementById("shell1"),
@@ -24,7 +29,13 @@ const posArray = [
 
 let level = 1;
 let speedMultiplier = 0.5;
+let cash = 100;
+let bet = 0;
+let betMultiplier = 1;
+
 let currShell = gameScreen.shells[1];
+
+let ready = false;
 
 function resetPosition() {
     const size = gameScreen.shellContainer.offsetWidth;
@@ -173,6 +184,56 @@ function start() {
     },300);
 };
 
+function play() {
+    startScreen.menu.style.display = "none";
+    gameScreen.container.style.opacity = 0;
+    gameScreen.container.style.visibility = "visible";
+    resetPosition();
+    let screenAnim = setInterval(function() {
+        currSize += 1;
+        gameScreen.container.style.opacity = Math.min(currSize, 100)/100;
+        if (currSize >= 100) {
+            clearInterval(screenAnim);
+        };
+    },5);
+};
+
+function startRound() {
+    if (bet <= 0 || bet > cash) {bet=0; return;};
+    if (!ready) {
+        start();
+        ready = true;
+    } else {
+        swap(gameScreen.shells, Math.max(100-(level*speedMultiplier*10),30), level);
+    };
+    gameScreen.betContainer.style.display = "none";
+}
+
+const btnArray = Array.from(gameScreen.increments.children);
+let btnIncrement = 0;
+btnArray.forEach(function(elem) {
+    btnIncrement++;
+    const increment = btnIncrement;
+    function addBet() {
+        const calcIncrement = increment*betMultiplier;
+        let pendingBet = 0;
+        console.log(calcIncrement);
+        if (calcIncrement%2 == 1) {
+            pendingBet += 5*(Math.pow(10,Math.max((calcIncrement-1),1)));
+        } else {
+            pendingBet += Math.pow(10,calcIncrement);
+        };
+
+        if (bet + pendingBet <= cash) {
+            bet += pendingBet;
+            gameScreen.betAmount.textContent = bet;
+            gameScreen.startBtn.style.display = "inline-block";
+        }
+    };
+    elem.onmouseup = addBet;
+    elem.ontouchend = addBet;
+});
+
 gameScreen.shells.forEach(function(elem){
     function onClick() {
         if (gameScreen.shellContainer.classList.contains("active")) {
@@ -182,11 +243,20 @@ gameScreen.shells.forEach(function(elem){
                     level++;
                     gameScreen.levelText.textContent = level;
                     speedMultiplier = Math.floor(level/5);
+                    cash += bet;
+                    bet = 0;
                 } else if (!result) {
                     raise(currShell,currShell, grabResult);
+                    cash -= bet;
+                    bet = 0;
                     return;
                 };
-                swap(gameScreen.shells, Math.max(100-(level*speedMultiplier*10),30), level);
+                if (result) {
+                    gameScreen.bankText.textContent = cash;
+                    gameScreen.betAmount.textContent = bet;
+                    gameScreen.startBtn.style.display = "none";
+                    gameScreen.betContainer.style.display = "block";
+                };
             };
             raise(elem,currShell,grabResult,true);
         };
@@ -218,22 +288,11 @@ let menuAnim = setInterval(function(){
     };    
 },5);
 
-function play() {
-    startScreen.menu.style.display = "none";
-    gameScreen.container.style.opacity = 0;
-    gameScreen.container.style.visibility = "visible";
-    resetPosition();
-    let screenAnim = setInterval(function() {
-        currSize += 1;
-        gameScreen.container.style.opacity = Math.min(currSize, 100)/100;
-        if (currSize >= 100) {
-            clearInterval(screenAnim);
-            start();
-        };
-    },5);
-};
 
 startScreen.playBtn.onmouseup = play;
 startScreen.playBtn.ontouchend = play;
+
+gameScreen.startBtn.onmouseup = startRound;
+gameScreen.startBtn.ontouchend = startRound;
 
 };  

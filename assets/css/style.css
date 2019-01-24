@@ -53,7 +53,7 @@ body img {
     height: 100%;
     top: 0;
     left: 0;
-    box-shadow: 0px 0px 30px 5px grey inset;
+    box-shadow: 0px 0px 5vh 0.5vh #80806d inset;
 }
 
 #menu-border img {
@@ -144,17 +144,74 @@ body img {
 
 #bank-container {
     position: absolute;
-    width: 20%;
     height: 3vw;
     font-size: 2.2vw;
     background-color: rgba(0, 0, 0, 0.275);
-    right: 10%;
-    top: 1vw;
+    right: 5%;
+    top: 1.15vw;
     box-shadow: 0 0 0 0.3vw #88282b;
 }
 
 #bank-container p {
+    white-space: nowrap;
     padding-top: 0.5vw;
+}
+
+#betting-container {
+    position: absolute;
+    top: 40%;
+    height: 50%;
+    width: 50%;
+    background-image: url(../images/topbar.png);
+    padding: 1.75%;
+    border-radius: 1.77vh;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+#betting-content {
+    height: 100%;
+    width: 100%;
+    font-size: 4.3vh;
+    color: #804042;
+    background: beige;
+    box-shadow: 0px 0px 5vh 0.5vh #80806d inset;
+    border: 0.59vh solid darkred;
+    box-sizing: border-box;
+}
+
+#betting-content * {
+    padding-top: 2.295vh;
+}
+
+#betting-content h1 {
+    font-size: 5vh;
+    font-weight: bolder;
+}
+
+#betting-amount {
+    font-weight: bold;
+    letter-spacing: 0.15vh;
+}
+
+#increments button, #start {
+    margin: 1.18vh;
+    padding: 0.35vh 5vh;
+    font-size: 4vh;
+    color: white;
+    background-color: #804042;
+    background-image: url(../images/topbar.png);
+    border: none;
+    box-shadow: 0 0 0 0.59vh #9c6466 inset;
+    border-radius: 1.18vh;
+}
+
+#start {
+    display: none;
+    margin: 1%;
+    padding: 1vh 5vh;
+    box-shadow: 0 0 0 0.59vh darkred inset;
+    border: 0.4vh solid orange;
 }
 
 #shell-container {
