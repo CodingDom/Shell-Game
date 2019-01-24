@@ -83,8 +83,13 @@ body img {
     color: #804042;
 }
 
+#menu-content * {
+    margin: 5vh;
+}
+
 #menu-content h1 {
     font-size: 5vh;
+    font-weight: bold;
 }
 
 #menu-content p {
@@ -131,6 +136,7 @@ body img {
 
 #level {
     position: absolute;
+    padding-top: 0.25vw;
     text-align: center;
     width: 100%;
     margin: 0;
@@ -145,6 +151,10 @@ body img {
     right: 10%;
     top: 1vw;
     box-shadow: 0 0 0 0.3vw #88282b;
+}
+
+#bank-container p {
+    padding-top: 0.5vw;
 }
 
 #shell-container {
