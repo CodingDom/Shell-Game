@@ -178,10 +178,30 @@ function randomizeShells(shells) {
     return newShells;
 };
 
+function addCommas (num) {
+    let newText = num.toString();
+    if (newText.length > 3) {
+        const numLength = newText.length;
+        let tempText = "";
+        let num = 0;
+        for (let i = numLength; i >= 0; i--) {
+            num++;
+            if (num%3 == 0 && i-1 > 0) {
+                tempText = "," + newText.substr(i-1, 3) + tempText;
+                num = 0;
+            } else if (i == 0) {
+                tempText = newText.substr(0, num-1) + tempText;
+            };
+        };
+        newText = tempText;
+    };
+    return newText;
+};
+
 function setText() {
     gameScreen.levelText.textContent = level;
-    gameScreen.bankText.textContent = cash;
-    gameScreen.betAmount.textContent = bet;
+    gameScreen.betAmount.textContent = addCommas(bet);
+    gameScreen.bankText.textContent = addCommas(cash);
 }
 
 function start() {
@@ -256,7 +276,7 @@ btnArray.forEach(function(elem) {
 
         if (bet + pendingBet <= cash) {
             bet += pendingBet;
-            gameScreen.betAmount.textContent = bet;
+            gameScreen.betAmount.textContent = addCommas(bet);
             gameScreen.startBtn.style.display = "inline-block";
         }
         setTimeout(function() {
