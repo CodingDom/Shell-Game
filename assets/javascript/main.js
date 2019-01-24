@@ -214,7 +214,10 @@ let btnIncrement = 0;
 btnArray.forEach(function(elem) {
     btnIncrement++;
     const increment = btnIncrement;
+    let debounce = false;
     function addBet() {
+        if (debounce) {return;};
+        debounce = true;
         const calcIncrement = increment*betMultiplier;
         let pendingBet = 0;
         console.log(calcIncrement);
@@ -229,6 +232,9 @@ btnArray.forEach(function(elem) {
             gameScreen.betAmount.textContent = bet;
             gameScreen.startBtn.style.display = "inline-block";
         }
+        setTimeout(function() {
+            debounce = false;
+        },100);
     };
     elem.onmouseup = addBet;
     elem.ontouchend = addBet;
