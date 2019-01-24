@@ -3,6 +3,10 @@ html,body {
     height: 100%;
     width: 100%;
     overflow: hidden;
+    -webkit-user-select: none; /* Safari */        
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
 body {
@@ -12,6 +16,14 @@ body {
     background-size: cover;
     background-position: center bottom;
     background-repeat: no-repeat;
+}
+
+body img {
+    -webkit-user-drag: none;
+    -khtml-user-drag: none;
+    -moz-user-drag: none;
+    -o-user-drag: none;
+    user-drag: none;
 }
 
 #game-container, #start-screen {
@@ -122,6 +134,17 @@ body {
     text-align: center;
     width: 100%;
     margin: 0;
+}
+
+#bank-container {
+    position: absolute;
+    width: 20%;
+    height: 5vh;
+    font-size: 3.7vh;
+    background-color: rgba(0, 0, 0, 0.275);
+    right: 10%;
+    top: 1.7vh;
+    box-shadow: 0 0 0 5px #88282b;
 }
 
 #shell-container {
