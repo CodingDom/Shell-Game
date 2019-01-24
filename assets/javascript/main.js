@@ -7,6 +7,8 @@ const startScreen = {
 
 const gameScreen = {
     container : document.getElementById("game-container"),
+    loseContainer : document.getElementById("lose-container"),
+    restartBtn : document.getElementById("restart"),
     levelText : document.getElementById("level-text"),
     bankText : document.getElementById("bank-text"),
     betContainer : document.getElementById("betting-container"),
@@ -176,6 +178,12 @@ function randomizeShells(shells) {
     return newShells;
 };
 
+function setText() {
+    gameScreen.levelText.textContent = level;
+    gameScreen.bankText.textContent = cash;
+    gameScreen.betAmount.textContent = bet;
+}
+
 function start() {
     setTimeout(function() {
         raise(currShell,currShell, function() {
@@ -184,11 +192,18 @@ function start() {
     },300);
 };
 
+let playing = false;
 function play() {
+    if (playing) {return;};
+    playing = true;
     startScreen.menu.style.display = "none";
     gameScreen.container.style.opacity = 0;
     gameScreen.container.style.visibility = "visible";
     resetPosition();
+    level = 1;
+    cash = 100;
+    bet = 0;
+    setText();
     let screenAnim = setInterval(function() {
         currSize += 1;
         gameScreen.container.style.opacity = Math.min(currSize, 100)/100;
@@ -198,13 +213,26 @@ function play() {
     },5);
 };
 
+function restart() {
+    gameScreen.loseContainer.style.display = "none";
+    resetPosition();
+    level = 1;
+    cash = 100;
+    bet = 0;
+    setText();
+    gameScreen.startBtn.style.display = "none";
+    gameScreen.betContainer.style.display = "block";
+};
+
 function startRound() {
     if (bet <= 0 || bet > cash) {bet=0; return;};
     if (!ready) {
         start();
         ready = true;
     } else {
-        swap(gameScreen.shells, Math.max(100-(level*speedMultiplier*10),30), level);
+        raise(currShell, currShell, function() {
+            swap(gameScreen.shells, Math.max(100-(level*speedMultiplier*10),30), level);
+        });
     };
     gameScreen.betContainer.style.display = "none";
 }
@@ -220,7 +248,6 @@ btnArray.forEach(function(elem) {
         debounce = true;
         const calcIncrement = increment*betMultiplier;
         let pendingBet = 0;
-        console.log(calcIncrement);
         if (calcIncrement%2 == 1) {
             pendingBet += 5*(Math.pow(10,Math.max((calcIncrement-1),1)));
         } else {
@@ -247,7 +274,6 @@ gameScreen.shells.forEach(function(elem){
             function grabResult(result) {
                 if (result == "correct") {
                     level++;
-                    gameScreen.levelText.textContent = level;
                     speedMultiplier = Math.floor(level/5);
                     cash += bet;
                     bet = 0;
@@ -258,8 +284,11 @@ gameScreen.shells.forEach(function(elem){
                     return;
                 };
                 if (result) {
-                    gameScreen.bankText.textContent = cash;
-                    gameScreen.betAmount.textContent = bet;
+                    setText();
+                    if (cash <= 0) {
+                        gameScreen.loseContainer.style.display = "block";
+                        return;
+                    };
                     gameScreen.startBtn.style.display = "none";
                     gameScreen.betContainer.style.display = "block";
                 };
@@ -300,5 +329,8 @@ startScreen.playBtn.ontouchend = play;
 
 gameScreen.startBtn.onmouseup = startRound;
 gameScreen.startBtn.ontouchend = startRound;
+
+gameScreen.restartBtn.onmouseup = restart;
+gameScreen.restartBtn.ontouchend = restart;
 
 };  

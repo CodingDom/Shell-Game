@@ -157,7 +157,7 @@ body img {
     padding-top: 0.5vw;
 }
 
-#betting-container {
+#betting-container,#lose-container {
     position: absolute;
     top: 40%;
     height: 50%;
@@ -169,7 +169,13 @@ body img {
     text-align: center;
 }
 
-#betting-content {
+#lose-container {
+    display: none;
+    height: 25%;
+    width: 25%;
+}
+
+#betting-content,#lose-content {
     height: 100%;
     width: 100%;
     font-size: 4.3vh;
@@ -180,11 +186,11 @@ body img {
     box-sizing: border-box;
 }
 
-#betting-content * {
+#betting-content *, #lose-content {
     padding-top: 2.295vh;
 }
 
-#betting-content h1 {
+#betting-content h1, #lose-content h1 {
     font-size: 5vh;
     font-weight: bolder;
 }
@@ -194,7 +200,7 @@ body img {
     letter-spacing: 0.15vh;
 }
 
-#increments button, #start {
+#increments button, #start, #restart {
     margin: 1.18vh;
     padding: 0.35vh 5vh;
     font-size: 4vh;
@@ -206,12 +212,17 @@ body img {
     border-radius: 1.18vh;
 }
 
-#start {
+#start, #restart {
     display: none;
     margin: 1%;
     padding: 1vh 5vh;
     box-shadow: 0 0 0 0.59vh darkred inset;
     border: 0.4vh solid orange;
+}
+
+#restart {
+    display: inline-block;
+    margin-top: 7%;
 }
 
 #shell-container {
