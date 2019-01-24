@@ -33,7 +33,7 @@ let level = 1;
 let speedMultiplier = 0.5;
 let cash = 100;
 let bet = 0;
-let betMultiplier = 1;
+let betMultiplier = 0;
 
 let currShell = gameScreen.shells[1];
 
@@ -246,12 +246,12 @@ btnArray.forEach(function(elem) {
     function addBet() {
         if (debounce) {return;};
         debounce = true;
-        const calcIncrement = increment*betMultiplier;
+        const calcIncrement = increment+betMultiplier;
         let pendingBet = 0;
         if (calcIncrement%2 == 1) {
-            pendingBet += 5*(Math.pow(10,Math.max((calcIncrement-1),1)));
+            pendingBet += 5*(Math.pow(10,Math.max(Math.floor(calcIncrement/2)+1,1)));
         } else {
-            pendingBet += Math.pow(10,calcIncrement);
+            pendingBet += Math.pow(10,Math.floor(calcIncrement/2)+1);
         };
 
         if (bet + pendingBet <= cash) {
