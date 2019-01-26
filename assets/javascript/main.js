@@ -10,11 +10,10 @@ const gameScreen = {
     loseContainer : document.getElementById("lose-container"),
     restartBtn : document.getElementById("restart"),
     levelText : document.getElementById("level-text"),
-    bankText : document.getElementById("bank-text"),
+    tokenText : document.getElementById("token-text"),
     betContainer : document.getElementById("betting-container"),
     betAmount : document.getElementById("betting-amount"),
     increments : document.getElementById("increments"),
-    startBtn : document.getElementById("start"),
     shellContainer : document.getElementById("shell-container"),
     shells : [
         document.getElementById("shell1"),
@@ -29,11 +28,19 @@ const posArray = [
     "right"
 ];
 
-let level = 1;
-let speedMultiplier = 0.5;
-let cash = 100;
-let bet = 0;
-let betMultiplier = 0;
+const defaultStats = {
+    level : 1,
+    speedMultiplier : 5,
+    cash : 500,
+    bet : 0,
+    betMultiplier : 0
+};
+
+let level = defaultStats.level;
+let speedMultiplier = defaultStats.speedMultiplier;
+let cash = defaultStats.cash;
+let bet = defaultStats.bet;
+let betMultiplier = defaultStats.betMultiplier;
 
 let currShell = gameScreen.shells[1];
 
@@ -94,7 +101,7 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
                 let lastSwap = randomizeShells([elem1,elem2]);
                 lastSwap = [lastSwap[0],elem3];
                 if (level > 0 && looped < level) {
-                    looped++;
+                    looped += 0.5;
                     swap(lastSwap, frames, 0, looped, swap, shells, level);
                 };
             } else {
@@ -200,16 +207,7 @@ function addCommas (num) {
 
 function setText() {
     gameScreen.levelText.textContent = level;
-    gameScreen.betAmount.textContent = addCommas(bet);
-    gameScreen.bankText.textContent = addCommas(cash);
-}
-
-function start() {
-    setTimeout(function() {
-        raise(currShell,currShell, function() {
-            swap(gameScreen.shells, 100, level);
-        });
-    },300);
+    gameScreen.tokenText.textContent = addCommas(cash);
 };
 
 let playing = false;
@@ -220,9 +218,11 @@ function play() {
     gameScreen.container.style.opacity = 0;
     gameScreen.container.style.visibility = "visible";
     resetPosition();
-    level = 1;
-    cash = 100;
-    bet = 0;
+    level = defaultStats.level;
+    speedMultiplier = defaultStats.speedMultiplier;
+    cash = defaultStats.cash;
+    bet = defaultStats.bet;
+    betMultiplier = defaultStats.betMultiplier;
     setText();
     let screenAnim = setInterval(function() {
         currSize += 1;
@@ -236,24 +236,20 @@ function play() {
 function restart() {
     gameScreen.loseContainer.style.display = "none";
     resetPosition();
-    level = 1;
-    cash = 100;
-    bet = 0;
+    level = defaultStats.level;
+    speedMultiplier = defaultStats.speedMultiplier;
+    cash = defaultStats.cash;
+    bet = defaultStats.bet;
+    betMultiplier = defaultStats.betMultiplier;
     setText();
-    gameScreen.startBtn.style.display = "none";
     gameScreen.betContainer.style.display = "block";
 };
 
 function startRound() {
     if (bet <= 0 || bet > cash) {bet=0; return;};
-    if (!ready) {
-        start();
-        ready = true;
-    } else {
-        raise(currShell, currShell, function() {
-            swap(gameScreen.shells, Math.max(100-(level*speedMultiplier*10),30), level);
-        });
-    };
+    raise(currShell, currShell, function() {
+        swap(gameScreen.shells, Math.max(100-(speedMultiplier*10),25), level);
+    });
     gameScreen.betContainer.style.display = "none";
 }
 
@@ -276,9 +272,10 @@ btnArray.forEach(function(elem) {
 
         if (bet + pendingBet <= cash) {
             bet += pendingBet;
-            gameScreen.betAmount.textContent = addCommas(bet);
-            gameScreen.startBtn.style.display = "inline-block";
+            // gameScreen.betAmount.textContent = addCommas(bet);
+            startRound();
         }
+
         setTimeout(function() {
             debounce = false;
         },100);
@@ -294,7 +291,7 @@ gameScreen.shells.forEach(function(elem){
             function grabResult(result) {
                 if (result == "correct") {
                     level++;
-                    speedMultiplier = Math.floor(level/5);
+                    speedMultiplier += Math.floor(level/5);
                     cash += bet;
                     bet = 0;
                 } else if (!result) {
@@ -309,7 +306,6 @@ gameScreen.shells.forEach(function(elem){
                         gameScreen.loseContainer.style.display = "block";
                         return;
                     };
-                    gameScreen.startBtn.style.display = "none";
                     gameScreen.betContainer.style.display = "block";
                 };
             };
@@ -346,9 +342,6 @@ let menuAnim = setInterval(function(){
 
 startScreen.playBtn.onmouseup = play;
 startScreen.playBtn.ontouchend = play;
-
-gameScreen.startBtn.onmouseup = startRound;
-gameScreen.startBtn.ontouchend = startRound;
 
 gameScreen.restartBtn.onmouseup = restart;
 gameScreen.restartBtn.ontouchend = restart;

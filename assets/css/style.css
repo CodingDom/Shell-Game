@@ -142,7 +142,7 @@ body img {
     margin: 0;
 }
 
-#bank-container {
+#token-container {
     position: absolute;
     height: 3vw;
     font-size: 2.2vw;
@@ -152,9 +152,13 @@ body img {
     box-shadow: 0 0 0 0.3vw #88282b;
 }
 
-#bank-container p {
+#token-container p {
     white-space: nowrap;
     padding-top: 0.5vw;
+}
+
+#token-container img {
+    width: 1.65vw;
 }
 
 #betting-container,#lose-container {
