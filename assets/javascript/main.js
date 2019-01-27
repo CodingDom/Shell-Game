@@ -30,7 +30,7 @@ const posArray = [
 
 const defaultStats = {
     level : 1,
-    speedMultiplier : 5,
+    speedMultiplier : 7,
     cash : 500,
     bet : 0,
     betMultiplier : 0
@@ -248,7 +248,7 @@ function restart() {
 function startRound() {
     if (bet <= 0 || bet > cash) {bet=0; return;};
     raise(currShell, currShell, function() {
-        swap(gameScreen.shells, Math.max(100-(speedMultiplier*10),25), level);
+        swap(gameScreen.shells, Math.max(100-(speedMultiplier*10),22), level);
     });
     gameScreen.betContainer.style.display = "none";
 }
@@ -291,7 +291,7 @@ gameScreen.shells.forEach(function(elem){
             function grabResult(result) {
                 if (result == "correct") {
                     level++;
-                    speedMultiplier += Math.floor(level/5);
+                    speedMultiplier = defaultStats.speedMultiplier + (Math.floor(level/3)/10);
                     cash += bet;
                     bet = 0;
                 } else if (!result) {
