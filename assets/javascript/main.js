@@ -21,12 +21,6 @@ var gameScreen = {
         document.getElementById("shell3")
     ],
 };
-var warning = document.getElementById("warning-message");
-var posArray = [
-    "left",
-    "center",
-    "right"
-];
 
 var defaultStats = {
     level : 1,
@@ -36,6 +30,12 @@ var defaultStats = {
     betMultiplier : 0
 };
 
+var posArray = [
+    "left",
+    "center",
+    "right"
+];
+    
 var level = defaultStats.level;
 var speedMultiplier = defaultStats.speedMultiplier;
 var cash = defaultStats.cash;
@@ -44,24 +44,20 @@ var betMultiplier = defaultStats.betMultiplier;
 
 var currShell = gameScreen.shells[1];
 
-var ready = false;
-
 function resetPosition() {
     var size = gameScreen.shellContainer.offsetWidth;
     var half = gameScreen.shells[0].offsetWidth/2;
-    gameScreen.shells.forEach(function(elem) {
-        switch (elem.getAttribute("data-pos")) {
-            case "left":
-                elem.style.left = "0";
-            break;
-            case "center":
-                elem.style.left = (((size/2) - half)/size)*100 + "%";
-            break;
-            case "right":
-                elem.style.left = ((size - (half*2))/size)*100 + "%";
-            break;
-        };
-    });
+    for (var i = 0; i < gameScreen.shells.length; i++) {
+        var elem = gameScreen.shells[i];
+        var pos = elem.getAttribute("data-pos");
+        if (pos == "left") {
+            elem.style.left = "0";
+        } else if (pos == "center") {
+            elem.style.left = (((size/2) - half)/size)*100 + "%";
+        } else if (pos == "right") {
+            elem.style.left = ((size - (half*2))/size)*100 + "%";
+        };    
+    };
 };
 
 function swap(shells, frames, level, looped, _callBack, originShells, originLevel) {
@@ -89,7 +85,7 @@ function swap(shells, frames, level, looped, _callBack, originShells, originLeve
 
     function frame() {
         target += mid/frames;
-        yTarget = (target/mid)*100;
+        var yTarget = (target/mid)*100;
         if (yTarget >= 200) {
             // Setting to exact positions
             elem1.style.left = pos2 + "%";
@@ -108,7 +104,7 @@ function swap(shells, frames, level, looped, _callBack, originShells, originLeve
                 if (looped >= originLevel) {
                     gameScreen.shellContainer.classList.add("active");
                 } else {
-                    _callBack(originShells, frames, originLevel, looped)
+                    _callBack(originShells, frames, originLevel, looped);
                 };
             };
             return;
@@ -143,7 +139,7 @@ function raise(elem, currShell, _callBack, correct) {
     function frame() {
         elem.style.bottom = yTarget + "%";
         if (yTarget <= 30) {
-        elem.style.transform = `rotate(${-yTarget}deg)`;
+        elem.style.transform = "rotate(" + (-yTarget) + "deg)";
         };
         yTarget += dir;
         if (yTarget >= 200) {
@@ -185,19 +181,19 @@ function randomizeShells(shells) {
     return newShells;
 };
 
-function addCommas (num) {
+function addCommas(num) {
     var newText = num.toString();
     if (newText.length > 3) {
         var numLength = newText.length;
         var tempText = "";
-        var num = 0;
+        var num2 = 0;
         for (var i = numLength; i >= 0; i--) {
-            num++;
-            if (num%3 == 0 && i-1 > 0) {
+            num2++;
+            if (num2%3 == 0 && i-1 > 0) {
                 tempText = "," + newText.substr(i-1, 3) + tempText;
-                num = 0;
+                num2 = 0;
             } else if (i == 0) {
-                tempText = newText.substr(0, num-1) + tempText;
+                tempText = newText.substr(0, num2-1) + tempText;
             };
         };
         newText = tempText;
@@ -233,6 +229,8 @@ function play() {
         };
     },5);
 };
+startScreen.playBtn.onmouseup = play;
+startScreen.playBtn.ontouchstart = play;
 
 function restart(e) {
     e.preventDefault();
@@ -246,6 +244,8 @@ function restart(e) {
     setText();
     gameScreen.betContainer.style.display = "block";
 };
+gameScreen.restartBtn.onmouseup = restart;
+gameScreen.restartBtn.ontouchstart = restart;
 
 function startRound(e) {
     e.preventDefault();
@@ -256,74 +256,76 @@ function startRound(e) {
     gameScreen.betContainer.style.display = "none";
 };
 
-var btnArray = Array.from(gameScreen.increments.children);
-var btnIncrement = 0;
-btnArray.forEach(function(elem) {
-    btnIncrement++;
-    var increment = btnIncrement;
-    var debounce = false;
-    function addBet(e) {
-        e.preventDefault();
-        if (debounce) {return;};
-        debounce = true;
-        var calcIncrement = increment+betMultiplier;
-        var pendingBet = 0;
-        if (calcIncrement%2 == 1) {
-            pendingBet += 5*(Math.pow(10,Math.max(Math.floor(calcIncrement/2)+1,1)));
-        } else {
-            pendingBet += Math.pow(10,Math.floor(calcIncrement/2)+1);
-        };
+function betButtons() {
+    var btnArray = gameScreen.increments.children;
+    var btnIncrement = 0;
+        for (var i = 0; i < btnArray.length; i++) {
+        var elem = btnArray[i];
+        btnIncrement++;
+        var increment = btnIncrement;
+        var debounce = false;
+        function addBet(e) {
+            e.preventDefault();
+            if (debounce) {return;};
+            debounce = true;
+            var calcIncrement = increment+betMultiplier;
+            var pendingBet = 0;
+            if (calcIncrement%2 == 1) {
+                pendingBet += 5*(Math.pow(10,Math.max(Math.floor(calcIncrement/2)+1,1)));
+            } else {
+                pendingBet += Math.pow(10,Math.floor(calcIncrement/2)+1);
+            };
 
-        if (bet + pendingBet <= cash) {
-            bet += pendingBet;
-            startRound(e);
-        };
+            if (bet + pendingBet <= cash) {
+                bet += pendingBet;
+                startRound(e);
+            };
 
-        setTimeout(function() {
-            debounce = false;
-        },100);
+            setTimeout(function() {
+                debounce = false;
+            },100);
+        };
+        elem.onmouseup = addBet;
+        elem.ontouchstart = addBet;
     };
-    elem.onmouseup = addBet;
-    elem.ontouchstart = addBet;
-});
+};
+betButtons();
 
-gameScreen.shells.forEach(function(elem){
-    function onClick() {
-        if (gameScreen.shellContainer.classList.contains("active")) {
-            gameScreen.shellContainer.classList.remove("active");
-            function grabResult(result) {
-                if (result == "correct") {
-                    level++;
-                    speedMultiplier = defaultStats.speedMultiplier + (Math.floor(level/3)/10);
-                    cash += bet;
-                    bet = 0;
-                } else if (!result) {
-                    raise(currShell,currShell, grabResult);
-                    cash -= bet;
-                    bet = 0;
-                    return;
-                };
-                if (result) {
-                    setText();
-                    if (cash <= 0) {
-                        gameScreen.loseContainer.style.display = "block";
+function shellButtons() {
+    for (var i = 0; i < gameScreen.shells.length; i++) {
+        var elem = gameScreen.shells[i];
+        function onClick() {
+            if (gameScreen.shellContainer.classList.contains("active")) {
+                gameScreen.shellContainer.classList.remove("active");
+                function grabResult(result) {
+                    if (result == "correct") {
+                        level++;
+                        speedMultiplier = defaultStats.speedMultiplier + (Math.floor(level/3)/10);
+                        cash += bet;
+                        bet = 0;
+                    } else if (!result) {
+                        raise(currShell,currShell, grabResult);
+                        cash -= bet;
+                        bet = 0;
                         return;
                     };
-                    gameScreen.betContainer.style.display = "block";
+                    if (result) {
+                        setText();
+                        if (cash <= 0) {
+                            gameScreen.loseContainer.style.display = "block";
+                            return;
+                        };
+                        gameScreen.betContainer.style.display = "block";
+                    };
                 };
+                raise(elem,currShell,grabResult,true);
             };
-            raise(elem,currShell,grabResult,true);
         };
+        elem.onmouseup = onClick;
+        elem.ontouchstart = onClick;
+        elem.setAttribute("data-pos",posArray[gameScreen.shells.indexOf(elem)]);
     };
-    elem.onmouseup = onClick;
-    elem.ontouchstart = onClick;
-    elem.setAttribute("data-pos",posArray[gameScreen.shells.indexOf(elem)]);
-});
-
-startScreen.playBtn.onmouseup = play;
-startScreen.playBtn.ontouchstart = play;
-
-gameScreen.restartBtn.onmouseup = restart;
-gameScreen.restartBtn.ontouchstart = restart;
+};
+shellButtons();
 
 };  
