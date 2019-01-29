@@ -41,7 +41,7 @@ body img {
 
 #menu-container {
     position: absolute;
-    height: 5%;
+    height: 60%;
     width: 50%;
     top: 50%;
     background-color: beige;
@@ -77,7 +77,6 @@ body img {
     padding: 5px 15%;
     left: 0;
     top: 0;
-    opacity: 0;
     box-sizing: border-box;
     text-align: center;
     color: #804042;

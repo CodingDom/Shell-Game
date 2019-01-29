@@ -1,11 +1,11 @@
 window.onload = function() {
-const startScreen = {
+var startScreen = {
     menu : document.getElementById("menu-container"),
     content : document.getElementById("menu-content"),
     playBtn : document.getElementById("play"),
-}    
+};    
 
-const gameScreen = {
+var gameScreen = {
     container : document.getElementById("game-container"),
     loseContainer : document.getElementById("lose-container"),
     restartBtn : document.getElementById("restart"),
@@ -20,15 +20,15 @@ const gameScreen = {
         document.getElementById("shell2"),
         document.getElementById("shell3")
     ],
-}
-const warning = document.getElementById("warning-message");
-const posArray = [
+};
+var warning = document.getElementById("warning-message");
+var posArray = [
     "left",
     "center",
     "right"
 ];
 
-const defaultStats = {
+var defaultStats = {
     level : 1,
     speedMultiplier : 7,
     cash : 500,
@@ -36,19 +36,19 @@ const defaultStats = {
     betMultiplier : 0
 };
 
-let level = defaultStats.level;
-let speedMultiplier = defaultStats.speedMultiplier;
-let cash = defaultStats.cash;
-let bet = defaultStats.bet;
-let betMultiplier = defaultStats.betMultiplier;
+var level = defaultStats.level;
+var speedMultiplier = defaultStats.speedMultiplier;
+var cash = defaultStats.cash;
+var bet = defaultStats.bet;
+var betMultiplier = defaultStats.betMultiplier;
 
-let currShell = gameScreen.shells[1];
+var currShell = gameScreen.shells[1];
 
-let ready = false;
+var ready = false;
 
 function resetPosition() {
-    const size = gameScreen.shellContainer.offsetWidth;
-    const half = gameScreen.shells[0].offsetWidth/2;
+    var size = gameScreen.shellContainer.offsetWidth;
+    var half = gameScreen.shells[0].offsetWidth/2;
     gameScreen.shells.forEach(function(elem) {
         switch (elem.getAttribute("data-pos")) {
             case "left":
@@ -64,28 +64,28 @@ function resetPosition() {
     });
 };
 
-function swap(shells, frames, level, looped=0, _callBack, originShells, originLevel) {
-    const randShells = randomizeShells(shells);
-    const elem1 = randShells[0];
-    const elem2 = randShells[1];
-    const elem3 = randShells[2];
-    const pos1 = elem1.style.left.match(/\d+/g).map(Number)[0];
-    const pos2 = elem2.style.left.match(/\d+/g).map(Number)[0];
-    const mid = Math.abs(pos2-pos1)/2;
+function swap(shells, frames, level, looped, _callBack, originShells, originLevel) {
+    var randShells = randomizeShells(shells);
+    var elem1 = randShells[0];
+    var elem2 = randShells[1];
+    var elem3 = randShells[2];
+    var pos1 = elem1.style.left.match(/\d+/g).map(Number)[0];
+    var pos2 = elem2.style.left.match(/\d+/g).map(Number)[0];
+    var mid = Math.abs(pos2-pos1)/2;
 
-    const elem1Align = elem1.getAttribute("data-pos");
-    const elem2Align = elem2.getAttribute("data-pos");
+    var elem1Align = elem1.getAttribute("data-pos");
+    var elem2Align = elem2.getAttribute("data-pos");
 
     elem1.setAttribute("data-pos",elem2Align);
     elem1.setAttribute("data-dir","top");
     elem2.setAttribute("data-pos",elem1Align);
     elem2.setAttribute("data-dir","bottom");
-    let dir = 1;
+    var dir = 1;
     if (pos1 > pos2) {
         dir = -1;
     };
-    let target = 0;
-    let id = setInterval(frame, 5);
+    var target = 0;
+    var id = setInterval(frame, 5);
 
     function frame() {
         target += mid/frames;
@@ -98,7 +98,7 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
             elem2.style.bottom = "0";
             clearInterval(id);
             if (elem3) {
-                let lastSwap = randomizeShells([elem1,elem2]);
+                var lastSwap = randomizeShells([elem1,elem2]);
                 lastSwap = [lastSwap[0],elem3];
                 if (level > 0 && looped < level) {
                     looped += 0.5;
@@ -122,24 +122,24 @@ function swap(shells, frames, level, looped=0, _callBack, originShells, originLe
         };
         elem1.style.left = pos1 + (dir*target) + '%'; 
         elem2.style.left = pos2 - (dir*target) + '%'; 
-    }
+    };
 };
 
 function raise(elem, currShell, _callBack, correct) {
-    let pearl = null;
+    var pearl = null;
     if (currShell == elem) {
         pearl = document.createElement("div");
         pearl.id = "pearl";
         gameScreen.shellContainer.append(pearl);
         pearl.style.bottom = 0;
-        const calcLeft = ((pearl.offsetWidth+(pearl.offsetWidth/1.5))/gameScreen.shellContainer.offsetWidth) + (elem.offsetLeft/gameScreen.shellContainer.offsetWidth);
+        var calcLeft = ((pearl.offsetWidth+(pearl.offsetWidth/1.5))/gameScreen.shellContainer.offsetWidth) + (elem.offsetLeft/gameScreen.shellContainer.offsetWidth);
         pearl.style.left = calcLeft*100 + "%";
         pearl.style.visibility = "visible";
         pearl.style.zIndex = 0;
     };
-    let id = setInterval(frame, 5);
-    let yTarget = 1;
-    let dir = 2.5;
+    var id = setInterval(frame, 5);
+    var yTarget = 1;
+    var dir = 2.5;
     function frame() {
         elem.style.bottom = yTarget + "%";
         if (yTarget <= 30) {
@@ -174,11 +174,11 @@ function raise(elem, currShell, _callBack, correct) {
 };
 
 function randomizeShells(shells) {
-    const reps = shells.length;
-    let tempShells = shells.slice(0);
-    let newShells = [];
-    for (let i = 0; i < reps; i++) {
-        let randNum = Math.floor(Math.random()*tempShells.length);
+    var reps = shells.length;
+    var tempShells = shells.slice(0);
+    var newShells = [];
+    for (var i = 0; i < reps; i++) {
+        var randNum = Math.floor(Math.random()*tempShells.length);
         newShells[i] = tempShells[randNum];
         tempShells.splice(randNum,1);
     };
@@ -186,12 +186,12 @@ function randomizeShells(shells) {
 };
 
 function addCommas (num) {
-    let newText = num.toString();
+    var newText = num.toString();
     if (newText.length > 3) {
-        const numLength = newText.length;
-        let tempText = "";
-        let num = 0;
-        for (let i = numLength; i >= 0; i--) {
+        var numLength = newText.length;
+        var tempText = "";
+        var num = 0;
+        for (var i = numLength; i >= 0; i--) {
             num++;
             if (num%3 == 0 && i-1 > 0) {
                 tempText = "," + newText.substr(i-1, 3) + tempText;
@@ -210,7 +210,7 @@ function setText() {
     gameScreen.tokenText.textContent = addCommas(cash);
 };
 
-let playing = false;
+var playing = false;
 function play() {
     if (playing) {return;};
     playing = true;
@@ -224,16 +224,18 @@ function play() {
     bet = defaultStats.bet;
     betMultiplier = defaultStats.betMultiplier;
     setText();
-    let screenAnim = setInterval(function() {
-        currSize += 1;
-        gameScreen.container.style.opacity = Math.min(currSize, 100)/100;
-        if (currSize >= 100) {
+    var currTrans = 0;
+    var screenAnim = setInterval(function() {
+        currTrans += 1;
+        gameScreen.container.style.opacity = Math.min(currTrans, 100)/100;
+        if (currTrans >= 100) {
             clearInterval(screenAnim);
         };
     },5);
 };
 
-function restart() {
+function restart(e) {
+    e.preventDefault();
     gameScreen.loseContainer.style.display = "none";
     resetPosition();
     level = defaultStats.level;
@@ -245,25 +247,27 @@ function restart() {
     gameScreen.betContainer.style.display = "block";
 };
 
-function startRound() {
+function startRound(e) {
+    e.preventDefault();
     if (bet <= 0 || bet > cash) {bet=0; return;};
     raise(currShell, currShell, function() {
-        swap(gameScreen.shells, Math.max(100-(speedMultiplier*10),22), level);
+        swap(gameScreen.shells, Math.max(100-(speedMultiplier*10),22), level,0);
     });
     gameScreen.betContainer.style.display = "none";
-}
+};
 
-const btnArray = Array.from(gameScreen.increments.children);
-let btnIncrement = 0;
+var btnArray = Array.from(gameScreen.increments.children);
+var btnIncrement = 0;
 btnArray.forEach(function(elem) {
     btnIncrement++;
-    const increment = btnIncrement;
-    let debounce = false;
-    function addBet() {
+    var increment = btnIncrement;
+    var debounce = false;
+    function addBet(e) {
+        e.preventDefault();
         if (debounce) {return;};
         debounce = true;
-        const calcIncrement = increment+betMultiplier;
-        let pendingBet = 0;
+        var calcIncrement = increment+betMultiplier;
+        var pendingBet = 0;
         if (calcIncrement%2 == 1) {
             pendingBet += 5*(Math.pow(10,Math.max(Math.floor(calcIncrement/2)+1,1)));
         } else {
@@ -272,16 +276,15 @@ btnArray.forEach(function(elem) {
 
         if (bet + pendingBet <= cash) {
             bet += pendingBet;
-            // gameScreen.betAmount.textContent = addCommas(bet);
-            startRound();
-        }
+            startRound(e);
+        };
 
         setTimeout(function() {
             debounce = false;
         },100);
     };
     elem.onmouseup = addBet;
-    elem.ontouchend = addBet;
+    elem.ontouchstart = addBet;
 });
 
 gameScreen.shells.forEach(function(elem){
@@ -311,39 +314,16 @@ gameScreen.shells.forEach(function(elem){
             };
             raise(elem,currShell,grabResult,true);
         };
-    }
+    };
     elem.onmouseup = onClick;
-    elem.ontouchend = onClick;
+    elem.ontouchstart = onClick;
     elem.setAttribute("data-pos",posArray[gameScreen.shells.indexOf(elem)]);
 });
 
-let currSize = 0;
-startScreen.content.style.opacity = 0;
-let menuAnim = setInterval(function(){
-    if (startScreen.menu.style.height != "60%") {
-        currSize += 0.5;
-        if (currSize < 5) {currSize = 5};
-        startScreen.menu.style.height = Math.min(currSize, 60) + "%";
-        if (currSize >= 60) {
-            startScreen.content.style.opacity = "1";
-            startScreen.content.style.zIndex = 5;
-            currSize = 0;
-        };
-    } else {
-        currSize += 0.5;
-        startScreen.content.style.opacity = currSize/100;
-        if (currSize >= 100) {
-            clearInterval(menuAnim);
-            currSize = 0;
-        };
-    };    
-},5);
-
-
 startScreen.playBtn.onmouseup = play;
-startScreen.playBtn.ontouchend = play;
+startScreen.playBtn.ontouchstart = play;
 
 gameScreen.restartBtn.onmouseup = restart;
-gameScreen.restartBtn.ontouchend = restart;
+gameScreen.restartBtn.ontouchstart = restart;
 
 };  
