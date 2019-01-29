@@ -251,7 +251,7 @@ function startRound(e) {
     e.preventDefault();
     if (bet <= 0 || bet > cash) {bet=0; return;};
     raise(currShell, currShell, function() {
-        swap(gameScreen.shells, Math.max(100-(speedMultiplier*10),22), level,0);
+        swap(gameScreen.shells, Math.max(100-(speedMultiplier*10),22), level, 0);
     });
     gameScreen.betContainer.style.display = "none";
 };
@@ -259,12 +259,11 @@ function startRound(e) {
 function betButtons() {
     var btnArray = gameScreen.increments.children;
     var btnIncrement = 0;
-        for (var i = 0; i < btnArray.length; i++) {
-        var elem = btnArray[i];
+    var setUpButton = function(elem) {
         btnIncrement++;
         var increment = btnIncrement;
         var debounce = false;
-        function addBet(e) {
+        var addBet = function(e) {
             e.preventDefault();
             if (debounce) {return;};
             debounce = true;
@@ -275,7 +274,7 @@ function betButtons() {
             } else {
                 pendingBet += Math.pow(10,Math.floor(calcIncrement/2)+1);
             };
-
+            
             if (bet + pendingBet <= cash) {
                 bet += pendingBet;
                 startRound(e);
@@ -288,42 +287,46 @@ function betButtons() {
         elem.onmouseup = addBet;
         elem.ontouchstart = addBet;
     };
+    for (var i = 0; i < btnArray.length; i++) {
+        setUpButton(btnArray[i]);
+    };
 };
 betButtons();
 
 function shellButtons() {
-    for (var i = 0; i < gameScreen.shells.length; i++) {
-        var elem = gameScreen.shells[i];
-        function onClick() {
-            if (gameScreen.shellContainer.classList.contains("active")) {
-                gameScreen.shellContainer.classList.remove("active");
-                function grabResult(result) {
-                    if (result == "correct") {
-                        level++;
-                        speedMultiplier = defaultStats.speedMultiplier + (Math.floor(level/3)/10);
-                        cash += bet;
-                        bet = 0;
-                    } else if (!result) {
-                        raise(currShell,currShell, grabResult);
-                        cash -= bet;
-                        bet = 0;
+    var onClick = function(e) {
+        e.preventDefault();
+        if (gameScreen.shellContainer.classList.contains("active")) {
+            gameScreen.shellContainer.classList.remove("active");
+            var grabResult = function(result) {
+                if (result == "correct") {
+                    level++;
+                    speedMultiplier = defaultStats.speedMultiplier + (Math.floor(level/3)/10);
+                    cash += bet;
+                    bet = 0;
+                } else if (!result) {
+                    raise(currShell,currShell, grabResult);
+                    cash -= bet;
+                    bet = 0;
+                    return;
+                };
+                if (result) {
+                    setText();
+                    if (cash <= 0) {
+                        gameScreen.loseContainer.style.display = "block";
                         return;
                     };
-                    if (result) {
-                        setText();
-                        if (cash <= 0) {
-                            gameScreen.loseContainer.style.display = "block";
-                            return;
-                        };
-                        gameScreen.betContainer.style.display = "block";
-                    };
+                    gameScreen.betContainer.style.display = "block";
                 };
-                raise(elem,currShell,grabResult,true);
             };
+            raise(e.target,currShell,grabResult,true);
         };
+    };
+    for (var i = 0; i < gameScreen.shells.length; i++) {
+        var elem = gameScreen.shells[i];
         elem.onmouseup = onClick;
         elem.ontouchstart = onClick;
-        elem.setAttribute("data-pos",posArray[gameScreen.shells.indexOf(elem)]);
+        elem.setAttribute("data-pos",posArray[i]);
     };
 };
 shellButtons();
